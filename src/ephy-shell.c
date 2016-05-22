@@ -30,6 +30,7 @@
 #include "ephy-file-helpers.h"
 #include "ephy-gui.h"
 #include "ephy-history-window.h"
+#include "ephy-sync-window.h"
 #include "ephy-home-action.h"
 #include "ephy-lockdown.h"
 #include "ephy-prefs.h"
@@ -56,6 +57,7 @@ struct _EphyShell {
   GNetworkMonitor *network_monitor;
   GtkWidget *bme;
   GtkWidget *history_window;
+  GtkWidget *sync_window;
   GObject *prefs_dialog;
   EphyShellStartupContext *local_startup_context;
   EphyShellStartupContext *remote_startup_context;
@@ -183,6 +185,20 @@ show_history (GSimpleAction *action,
 }
 
 static void
+show_sync (GSimpleAction *action,
+           GVariant      *parameter,
+           gpointer      user_data)
+{
+  GtkWindow *window;
+
+  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (ephy_shell));
+
+  window_cmd_edit_sync (NULL, EPHY_WINDOW (window));
+}
+
+static void
 show_preferences (GSimpleAction *action,
                   GVariant      *parameter,
                   gpointer       user_data)
@@ -231,6 +247,7 @@ static GActionEntry app_entries[] = {
   { "new-incognito", new_incognito_window, NULL, NULL, NULL },
   { "bookmarks", show_bookmarks, NULL, NULL, NULL },
   { "history", show_history, NULL, NULL, NULL },
+  { "sync", show_sync, NULL, NULL, NULL },
   { "preferences", show_preferences, NULL, NULL, NULL },
   { "help", show_help, NULL, NULL, NULL },
   { "about", show_about, NULL, NULL, NULL },
@@ -788,6 +805,27 @@ ephy_shell_get_history_window (EphyShell *shell)
   }
 
   return shell->history_window;
+}
+
+GtkWidget *
+ephy_shell_get_sync_window (EphyShell *shell)
+{
+  EphyEmbedShell *embed_shell;
+
+  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+
+  embed_shell = ephy_embed_shell_get_default ();
+  embed_shell = embed_shell; // suppress warnings
+
+  if (shell->sync_window == NULL) {
+    shell->sync_window = ephy_sync_window_new ();
+    g_signal_connect (shell->sync_window,
+                      "destroy",
+                      G_CALLBACK (gtk_widget_destroyed),
+                      &shell->sync_window);
+  }
+
+  return shell->sync_window;
 }
 
 /**

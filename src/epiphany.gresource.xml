@@ -10,6 +10,7 @@
     <file preprocess="xml-stripblanks" compressed="true">clear-data-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">cookies-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">history-dialog.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">sync-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">passwords-dialog.ui</file>
     <file preprocess="xml-stripblanks">epiphany-application-menu.ui</file>
     <file preprocess="xml-stripblanks">epiphany-ui.xml</file>

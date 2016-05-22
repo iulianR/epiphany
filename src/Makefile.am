@@ -43,6 +43,8 @@ libephymain_la_SOURCES = \
 	ephy-home-action.h			\
 	ephy-history-window.c			\
 	ephy-history-window.h			\
+	ephy-sync-window.c			\
+	ephy-sync-window.h			\
 	ephy-link.c				\
 	ephy-link.h				\
 	ephy-link-action.c			\
@@ -124,6 +126,7 @@ RESOURCE_FILES = \
 	resources/passwords-dialog.ui		  \
 	resources/prefs-dialog.ui		  \
 	resources/prefs-lang-dialog.ui		  \
+	resources/sync-dialog.ui		  \
 	$(NULL)
 
 epiphany-resources.c: epiphany.gresource.xml $(RESOURCE_FILES)
