@@ -6,6 +6,7 @@
 struct _EphySyncWindow {
   GtkDialog parent_instance;
 
+  EphySyncService *sync_service;
   GCancellable *cancellable;
 
   GtkWidget *entry_email;
@@ -13,11 +14,17 @@ struct _EphySyncWindow {
   GtkButton *btn_submit;
 
   GActionGroup *action_group;
-
-  // TODO: Add sync service instance
 };
 
 G_DEFINE_TYPE (EphySyncWindow, ephy_sync_window, GTK_TYPE_DIALOG)
+
+enum {
+  PROP_0,
+  PROP_SYNC_SERVICE,
+  PROP_LAST
+};
+
+static GParamSpec *obj_properties[PROP_LAST];
 
 static void
 quickstretch (GSimpleAction *action,
@@ -29,6 +36,60 @@ quickstretch (GSimpleAction *action,
 
   printf("email:%s\n", gtk_entry_get_text (GTK_ENTRY (self->entry_email)));
   printf("password:%s\n", gtk_entry_get_text (GTK_ENTRY (self->entry_password)));
+}
+
+static void
+set_sync_service (EphySyncWindow  *self,
+                  EphySyncService *sync_service)
+{
+  if (sync_service == self->sync_service)
+    return;
+
+  if (self->sync_service != NULL) {
+    // TODO: Disconnect signal handlers, if any
+    g_clear_object (&self->sync_service);
+  }
+
+  if (sync_service != NULL) {
+    self->sync_service = g_object_ref (sync_service);
+    // TODO: Connect signal handlers, if any
+  }
+}
+
+static void
+ephy_sync_window_set_property (GObject      *object,
+                               guint         prop_id,
+                               const GValue *value,
+                               GParamSpec   *pspec)
+{
+  EphySyncWindow *self = EPHY_SYNC_WINDOW (object);
+
+  switch (prop_id) {
+    case PROP_SYNC_SERVICE:
+      set_sync_service (self, g_value_get_object (value));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+ephy_sync_window_get_property (GObject    *object,
+                               guint       prop_id,
+                               GValue     *value,
+                               GParamSpec *pspec)
+{
+  EphySyncWindow *self = EPHY_SYNC_WINDOW (object);
+
+  switch (prop_id) {
+    case PROP_SYNC_SERVICE:
+      g_value_set_object (value, self->sync_service);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
 }
 
 static GActionGroup *
@@ -49,10 +110,23 @@ create_action_group (EphySyncWindow *self)
 static void
 ephy_sync_window_class_init (EphySyncWindowClass *klass)
 {
-  // GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+
+  object_class->set_property = ephy_sync_window_set_property;
+  object_class->get_property = ephy_sync_window_get_property;
+  // TODO: Set dispose method
+
+  obj_properties[PROP_SYNC_SERVICE] =
+    g_param_spec_object ("sync-service",
+                         "Sync service",
+                         "Sync Service",
+                         EPHY_TYPE_SYNC_SERVICE,
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
+
+  g_object_class_install_properties (object_class, PROP_LAST, obj_properties);
 
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gnome/epiphany/sync-dialog.ui");
@@ -78,7 +152,7 @@ ephy_sync_window_init (EphySyncWindow *self)
 }
 
 GtkWidget *
-ephy_sync_window_new (void)
+ephy_sync_window_new (EphySyncService *sync_service)
 {
   EphySyncWindow *self;
 
@@ -86,6 +160,7 @@ ephy_sync_window_new (void)
 
   self = g_object_new (EPHY_TYPE_SYNC_WINDOW,
                        "use-header-bar", TRUE,
+                       "sync-service", sync_service,
                        NULL);
 
   return GTK_WIDGET (self);

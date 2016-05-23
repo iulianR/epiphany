@@ -45,6 +45,8 @@ libephymain_la_SOURCES = \
 	ephy-history-window.h			\
 	ephy-sync-window.c			\
 	ephy-sync-window.h			\
+	ephy-sync-service.c			\
+	ephy-sync-service.h			\
 	ephy-link.c				\
 	ephy-link.h				\
 	ephy-link-action.c			\

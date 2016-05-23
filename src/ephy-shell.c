@@ -811,6 +811,7 @@ GtkWidget *
 ephy_shell_get_sync_window (EphyShell *shell)
 {
   EphyEmbedShell *embed_shell;
+  EphySyncService *sync_service;
 
   printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
@@ -818,7 +819,8 @@ ephy_shell_get_sync_window (EphyShell *shell)
   embed_shell = embed_shell; // suppress warnings
 
   if (shell->sync_window == NULL) {
-    shell->sync_window = ephy_sync_window_new ();
+    sync_service = ephy_sync_service_new ();
+    shell->sync_window = ephy_sync_window_new (sync_service);
     g_signal_connect (shell->sync_window,
                       "destroy",
                       G_CALLBACK (gtk_widget_destroyed),
