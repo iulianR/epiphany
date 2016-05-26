@@ -88,12 +88,12 @@
             </child>
             <child>
               <object class="GtkButton" id="btn_submit">
-                <property name="label" translatable="yes">_Stretch</property>
+                <property name="label" translatable="yes">_Submit</property>
                 <property name="visible">True</property>
                 <property name="use-underline">True</property>
                 <property name="sensitive">True</property>
                 <property name="valign">center</property>
-                <property name="action-name">sync.quickstretch</property>
+                <property name="action-name">sync.submit_action</property>
                 <style>
                   <class name="suggested-action"/>
                   <class name="text-button"/>

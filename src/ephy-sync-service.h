@@ -5,12 +5,20 @@
 
 G_BEGIN_DECLS
 
-#define EPHY_TYPE_SYNC_SERVICE (ephy_sync_service_get_type())
+#define EPHY_TYPE_SYNC_SERVICE  (ephy_sync_service_get_type ())
+#define TOKEN_LENGTH            32
 
 G_DECLARE_FINAL_TYPE (EphySyncService, ephy_sync_service, EPHY, SYNC_SERVICE, GObject)
 
-EphySyncService        *ephy_sync_service_new           (void);
-void                    ephy_sync_service_stretch       (void);
+EphySyncService *ephy_sync_service_new          (void);
+void             ephy_sync_service_stretch      (EphySyncService *self,
+                                                 const gchar *emailUTF8,
+                                                 const gchar *passwordUTF8,
+                                                 guint8 *authPW,
+                                                 guint8 *unwrapBKey);
+void             ephy_sync_service_display_hex  (const gchar *name,
+                                                 gsize length,
+                                                 guint8 *data);
 
 G_END_DECLS
 

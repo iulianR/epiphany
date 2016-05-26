@@ -1,6 +1,8 @@
 #include "ephy-sync-window.h"
+#include "ephy-sync-service.h"
 #include "ephy-gui.h"
 
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
 struct _EphySyncWindow {
@@ -27,15 +29,36 @@ enum {
 static GParamSpec *obj_properties[PROP_LAST];
 
 static void
-quickstretch (GSimpleAction *action,
-              GVariant      *parameter,
-              gpointer       user_data)
+submit_action (GSimpleAction *action,
+               GVariant      *parameter,
+               gpointer       user_data)
 {
+  const gchar *emailUTF8;
+  const gchar *passwordUTF8;
+  guint8 *authPW;
+  guint8 *unwrapBKey;
   EphySyncWindow *self = EPHY_SYNC_WINDOW (user_data);
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
-  printf("email:%s\n", gtk_entry_get_text (GTK_ENTRY (self->entry_email)));
-  printf("password:%s\n", gtk_entry_get_text (GTK_ENTRY (self->entry_password)));
+  emailUTF8 = gtk_entry_get_text (GTK_ENTRY (self->entry_email));
+  passwordUTF8 = gtk_entry_get_text (GTK_ENTRY (self->entry_password));
+  g_printf ("email: %s\n", emailUTF8);
+  g_printf ("password: %s\n", passwordUTF8);
+
+  authPW = g_malloc0 (TOKEN_LENGTH);
+  unwrapBKey = g_malloc0 (TOKEN_LENGTH);
+
+  ephy_sync_service_stretch (self->sync_service,
+                             emailUTF8,
+                             passwordUTF8,
+                             authPW,
+                             unwrapBKey);
+
+  ephy_sync_service_display_hex ("authPW", TOKEN_LENGTH, authPW);
+  ephy_sync_service_display_hex ("unwrapBKey", TOKEN_LENGTH, unwrapBKey);
+
+  g_free (authPW);
+  g_free (unwrapBKey);
 }
 
 static void
@@ -98,7 +121,7 @@ create_action_group (EphySyncWindow *self)
   GSimpleActionGroup *group;
 
   const GActionEntry entries[] = {
-    { "quickstretch", quickstretch }
+    { "submit_action", submit_action }
   };
 
   group = g_simple_action_group_new ();
@@ -113,7 +136,7 @@ ephy_sync_window_class_init (EphySyncWindowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
   object_class->set_property = ephy_sync_window_set_property;
   object_class->get_property = ephy_sync_window_get_property;
@@ -139,7 +162,7 @@ ephy_sync_window_class_init (EphySyncWindowClass *klass)
 static void
 ephy_sync_window_init (EphySyncWindow *self)
 {
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -156,7 +179,7 @@ ephy_sync_window_new (EphySyncService *sync_service)
 {
   EphySyncWindow *self;
 
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
   self = g_object_new (EPHY_TYPE_SYNC_WINDOW,
                        "use-header-bar", TRUE,
