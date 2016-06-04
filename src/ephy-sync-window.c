@@ -2,6 +2,7 @@
 #include "ephy-sync-service.h"
 #include "ephy-gui.h"
 
+#include <string.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
@@ -37,6 +38,8 @@ submit_action (GSimpleAction *action,
   const gchar *passwordUTF8;
   guint8 *authPW;
   guint8 *unwrapBKey;
+  guint8 *sessionToken;
+  guint8 *keyFetchToken;
   EphySyncWindow *self = EPHY_SYNC_WINDOW (user_data);
   g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
@@ -45,20 +48,37 @@ submit_action (GSimpleAction *action,
   g_printf ("email: %s\n", emailUTF8);
   g_printf ("password: %s\n", passwordUTF8);
 
-  authPW = g_malloc0 (TOKEN_LENGTH);
-  unwrapBKey = g_malloc0 (TOKEN_LENGTH);
+  /* Only for easy testing */
+  if (!strlen (emailUTF8) && !strlen (passwordUTF8)) {
+    emailUTF8 = g_strdup ("andré@example.org");
+    passwordUTF8 = g_strdup ("pässwörd");
+  }
 
+  authPW = g_malloc (TOKEN_LENGTH);
+  unwrapBKey = g_malloc (TOKEN_LENGTH);
   ephy_sync_service_stretch (self->sync_service,
                              emailUTF8,
                              passwordUTF8,
                              authPW,
                              unwrapBKey);
-
   ephy_sync_service_display_hex ("authPW", TOKEN_LENGTH, authPW);
   ephy_sync_service_display_hex ("unwrapBKey", TOKEN_LENGTH, unwrapBKey);
 
+  sessionToken = g_malloc (TOKEN_LENGTH);
+  keyFetchToken = g_malloc0 (TOKEN_LENGTH);
+  ephy_sync_service_try_login (self->sync_service,
+                               FALSE,
+                               emailUTF8,
+                               authPW,
+                               sessionToken,
+                               keyFetchToken);
+  ephy_sync_service_display_hex ("sessionToken", TOKEN_LENGTH, sessionToken);
+  ephy_sync_service_display_hex ("keyFetchToken", TOKEN_LENGTH, keyFetchToken);
+
   g_free (authPW);
   g_free (unwrapBKey);
+  g_free (sessionToken);
+  g_free (keyFetchToken);
 }
 
 static void

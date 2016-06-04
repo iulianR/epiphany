@@ -16,6 +16,12 @@ void             ephy_sync_service_stretch      (EphySyncService *self,
                                                  const gchar *passwordUTF8,
                                                  guint8 *authPW,
                                                  guint8 *unwrapBKey);
+void             ephy_sync_service_try_login    (EphySyncService *self,
+                                                 gboolean login_with_keys,
+                                                 const gchar *emailUTF8,
+                                                 guint8 *authPW,
+                                                 guint8 *sessionToken,
+                                                 guint8 *keyFetchToken);
 void             ephy_sync_service_display_hex  (const gchar *name,
                                                  gsize length,
                                                  guint8 *data);
