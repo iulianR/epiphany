@@ -5,7 +5,7 @@
 
 G_BEGIN_DECLS
 
-#define EPHY_TYPE_SYNC_SERVICE  (ephy_sync_service_get_type ())
+#define EPHY_TYPE_SYNC_SERVICE          (ephy_sync_service_get_type ())
 #define EPHY_SYNC_SERVICE_TOKEN_LENGTH  32
 
 G_DECLARE_FINAL_TYPE (EphySyncService, ephy_sync_service, EPHY, SYNC_SERVICE, GObject)
