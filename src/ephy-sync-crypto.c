@@ -16,9 +16,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ephy-debug.h"
 #include "ephy-sync-crypto.h"
 
-#include <glib/gstdio.h>
 #include <nettle/hmac.h>
 #include <nettle/pbkdf2.h>
 #include <string.h>
@@ -129,16 +129,13 @@ ephy_sync_crypto_hkdf (guint8 *in,
   g_free (prk);
 }
 
+/* FIXME: Only for debugging, remove when no longer needed */
 void
 ephy_sync_crypto_display_hex (guint8      *data,
                               gsize        data_length,
                               const gchar *data_name)
 {
-  g_printf ("%s:\n", data_name);
-  for (gsize i = 0; i < data_length; i++) {
-    g_printf ("%02x", data[i]);
-    if ((i + 1) % 8 == 0)
-      g_printf ("\n");
-  }
-  g_printf ("\n");
+LOG ("%s:", data_name);
+for (gsize i = 0; i < data_length; i++)
+  LOG ("%02x", data[i]);
 }

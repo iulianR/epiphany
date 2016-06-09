@@ -1,9 +1,9 @@
+#include "ephy-debug.h"
 #include "ephy-gui.h"
 #include "ephy-sync-crypto.h"
 #include "ephy-sync-service.h"
 #include "ephy-sync-window.h"
 
-#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
@@ -42,12 +42,11 @@ submit_action (GSimpleAction *action,
   guint8 *sessionToken;
   guint8 *keyFetchToken;
   EphySyncWindow *self = EPHY_SYNC_WINDOW (user_data);
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
 
   emailUTF8 = gtk_entry_get_text (GTK_ENTRY (self->entry_email));
+LOG ("email: %s", emailUTF8);
   passwordUTF8 = gtk_entry_get_text (GTK_ENTRY (self->entry_password));
-  g_printf ("email: %s\n", emailUTF8);
-  g_printf ("password: %s\n", passwordUTF8);
+LOG ("password: %s", passwordUTF8);
 
   /* Only for easy testing */
   if (!strlen (emailUTF8) && !strlen (passwordUTF8)) {
@@ -62,8 +61,8 @@ submit_action (GSimpleAction *action,
                              passwordUTF8,
                              authPW,
                              unwrapBKey);
-  ephy_sync_crypto_display_hex (authPW, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "authPW");
-  ephy_sync_crypto_display_hex (unwrapBKey, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "unwrapBKey");
+ephy_sync_crypto_display_hex (authPW, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "authPW");
+ephy_sync_crypto_display_hex (unwrapBKey, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "unwrapBKey");
 
   sessionToken = g_malloc (EPHY_SYNC_SERVICE_TOKEN_LENGTH);
   keyFetchToken = g_malloc (EPHY_SYNC_SERVICE_TOKEN_LENGTH);
@@ -73,8 +72,8 @@ submit_action (GSimpleAction *action,
                                authPW,
                                sessionToken,
                                keyFetchToken);
-  ephy_sync_crypto_display_hex (sessionToken, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "sessionToken");
-  ephy_sync_crypto_display_hex (keyFetchToken, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "keyFetchToken");
+ephy_sync_crypto_display_hex (sessionToken, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "sessionToken");
+ephy_sync_crypto_display_hex (keyFetchToken, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "keyFetchToken");
 
   g_free (authPW);
   g_free (unwrapBKey);
@@ -157,7 +156,7 @@ ephy_sync_window_class_init (EphySyncWindowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   object_class->set_property = ephy_sync_window_set_property;
   object_class->get_property = ephy_sync_window_get_property;
@@ -183,7 +182,7 @@ ephy_sync_window_class_init (EphySyncWindowClass *klass)
 static void
 ephy_sync_window_init (EphySyncWindow *self)
 {
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -200,7 +199,7 @@ ephy_sync_window_new (EphySyncService *sync_service)
 {
   EphySyncWindow *self;
 
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   self = g_object_new (EPHY_TYPE_SYNC_WINDOW,
                        "use-header-bar", TRUE,

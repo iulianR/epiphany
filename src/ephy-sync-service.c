@@ -1,12 +1,10 @@
+#include "ephy-debug.h"
 #include "ephy-sync-crypto.h"
 #include "ephy-sync-service.h"
 
-#include <string.h>
-#include <glib/gstdio.h>
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
-#include <nettle/hmac.h>
-#include <nettle/pbkdf2.h>
+#include <string.h>
 
 struct _EphySyncService {
   GObject parent_instance;
@@ -20,7 +18,7 @@ ephy_sync_service_class_init (EphySyncServiceClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   object_class = object_class; // suppress warnings
 
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   // TODO: Set finalize, dispose, set/get property methods
 }
@@ -28,7 +26,7 @@ ephy_sync_service_class_init (EphySyncServiceClass *klass)
 static void
 ephy_sync_service_init (EphySyncService *self)
 {
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 }
 
 static void
@@ -36,20 +34,18 @@ server_response_cb (SoupSession *session,
                     SoupMessage *message,
                     gpointer user_data)
 {
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
-
   if (message->status_code == 200) {
-    g_printf ("response body: %s\n", message->response_body->data);
+LOG ("response body: %s", message->response_body->data);
     // TODO: parse response data using JsonParser
   } else {
-    g_printerr ("Error response from server: [%u] %s\n", message->status_code, message->reason_phrase);
+LOG ("Error response from server: [%u] %s", message->status_code, message->reason_phrase);
   }
 }
 
 EphySyncService *
 ephy_sync_service_new (void)
 {
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   return EPHY_SYNC_SERVICE (g_object_new (EPHY_TYPE_SYNC_SERVICE,
                                           NULL));
@@ -69,7 +65,8 @@ ephy_sync_service_try_login (EphySyncService *self,
   char *authPW_hex;
 
   g_return_if_fail (EPHY_IS_SYNC_SERVICE (self));
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+
+LOG ("%s:%d", __func__, __LINE__);
 
   session = soup_session_new_with_options (SOUP_SESSION_USER_AGENT,
                                            "test-json",
@@ -111,7 +108,7 @@ ephy_sync_service_stretch (EphySyncService *self,
 
   g_return_if_fail (EPHY_IS_SYNC_SERVICE (self));
 
-  g_printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   salt_stretch = ephy_sync_crypto_kwe ("quickStretch", emailUTF8);
   quickStretchedPW = g_malloc (EPHY_SYNC_SERVICE_TOKEN_LENGTH);
@@ -122,7 +119,7 @@ ephy_sync_service_stretch (EphySyncService *self,
                               quickStretchedPW,
                               EPHY_SYNC_SERVICE_TOKEN_LENGTH);
 
-  ephy_sync_crypto_display_hex (quickStretchedPW, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "quickStretchedPW");
+ephy_sync_crypto_display_hex (quickStretchedPW, EPHY_SYNC_SERVICE_TOKEN_LENGTH, "quickStretchedPW");
 
   info_auth = ephy_sync_crypto_kw ("authPW");
   ephy_sync_crypto_hkdf (quickStretchedPW,

@@ -42,6 +42,7 @@ void   ephy_sync_crypto_hkdf        (guint8 *in,
                                      gsize   info_length,
                                      guint8 *out,
                                      gsize   out_length);
+/* FIXME: Only for debugging, remove when no longer needed */
 void   ephy_sync_crypto_display_hex (guint8      *data,
                                      gsize        data_length,
                                      const gchar *data_name);
