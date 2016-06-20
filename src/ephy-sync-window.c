@@ -19,7 +19,6 @@
 #include "ephy-debug.h"
 #include "ephy-gui.h"
 #include "ephy-sync-crypto.h"
-#include "ephy-sync-service.h"
 #include "ephy-sync-window.h"
 
 #include <gtk/gtk.h>

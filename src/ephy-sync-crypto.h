@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EPHY_EMBED_UTILS_H
-#define EPHY_EMBED_UTILS_H
+#ifndef EPHY_SYNC_CRYPTO_H
+#define EPHY_SYNC_CRYPTO_H
 
 #include <glib-object.h>
 

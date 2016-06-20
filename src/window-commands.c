@@ -1088,7 +1088,7 @@ window_cmd_edit_sync (GtkAction  *action,
 {
   GtkWidget *swindow;
 
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   swindow = ephy_shell_get_sync_window (ephy_shell_get_default ());
 

@@ -51,6 +51,7 @@ struct _EphyShell {
   EphyEmbedShell parent_instance;
 
   EphySession *session;
+  EphySyncService *global_sync_service;
   GList *windows;
   GObject *lockdown;
   EphyBookmarks *bookmarks;
@@ -191,7 +192,7 @@ show_sync (GSimpleAction *action,
 {
   GtkWindow *window;
 
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
+LOG ("%s:%d", __func__, __LINE__);
 
   window = gtk_application_get_active_window (GTK_APPLICATION (ephy_shell));
 
@@ -782,6 +783,26 @@ ephy_shell_get_bookmarks_editor (EphyShell *shell)
 }
 
 /**
+ * ephy_shell_get_global_sync_service:
+ *
+ * Return value: (transfer none):
+ **/
+GObject *
+ephy_shell_get_global_sync_service (EphyShell *shell)
+{
+  g_return_val_if_fail (EPHY_IS_SHELL (shell), NULL);
+
+  if (shell->global_sync_service == NULL) {
+LOG ("%s:%d", __func__, __LINE__);
+    shell->global_sync_service = ephy_sync_service_new ();
+    g_return_val_if_fail (shell->global_sync_service, NULL);
+  }
+
+LOG ("%s:%d", __func__, __LINE__);
+  return G_OBJECT (shell->global_sync_service);
+}
+
+/**
  * ephy_shell_get_history_window:
  *
  * Return value: (transfer none):
@@ -810,16 +831,11 @@ ephy_shell_get_history_window (EphyShell *shell)
 GtkWidget *
 ephy_shell_get_sync_window (EphyShell *shell)
 {
-  EphyEmbedShell *embed_shell;
   EphySyncService *sync_service;
 
-  printf ("[%s:%d, %s]\n", __FILE__, __LINE__, __func__);
-
-  embed_shell = ephy_embed_shell_get_default ();
-  embed_shell = embed_shell; // suppress warnings
-
   if (shell->sync_window == NULL) {
-    sync_service = ephy_sync_service_new ();
+LOG ("%s:%d", __func__, __LINE__);
+    sync_service = EPHY_SYNC_SERVICE (ephy_shell_get_global_sync_service (shell));
     shell->sync_window = ephy_sync_window_new (sync_service);
     g_signal_connect (shell->sync_window,
                       "destroy",
@@ -827,6 +843,7 @@ ephy_shell_get_sync_window (EphyShell *shell)
                       &shell->sync_window);
   }
 
+LOG ("%s:%d", __func__, __LINE__);
   return shell->sync_window;
 }
 
