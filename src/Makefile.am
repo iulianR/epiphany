@@ -43,12 +43,6 @@ libephymain_la_SOURCES = \
 	ephy-home-action.h			\
 	ephy-history-window.c			\
 	ephy-history-window.h			\
-	ephy-sync-window.c			\
-	ephy-sync-window.h			\
-	ephy-sync-service.c			\
-	ephy-sync-service.h			\
-	ephy-sync-crypto.c			\
-	ephy-sync-crypto.h			\
 	ephy-link.c				\
 	ephy-link.h				\
 	ephy-link-action.c			\
@@ -67,6 +61,14 @@ libephymain_la_SOURCES = \
 	ephy-session.h				\
 	ephy-shell.c				\
 	ephy-shell.h				\
+	ephy-sync-crypto.c			\
+	ephy-sync-crypto.h			\
+	ephy-sync-service.c			\
+	ephy-sync-service.h			\
+	ephy-sync-utils.c			\
+	ephy-sync-utils.h			\
+	ephy-sync-window.c			\
+	ephy-sync-window.h			\
 	ephy-title-box.c			\
 	ephy-title-box.h			\
 	ephy-toolbar.c				\
