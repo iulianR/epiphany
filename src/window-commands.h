@@ -104,8 +104,6 @@ void window_cmd_edit_bookmarks            (GtkAction  *action,
                                            EphyWindow *window);
 void window_cmd_edit_history              (GtkAction  *action,
                                            EphyWindow *window);
-void window_cmd_edit_sync                 (GtkAction  *action,
-                                           EphyWindow *window);
 void window_cmd_file_new_window           (GtkAction  *action,
                                            EphyWindow *window);
 void window_cmd_file_new_incognito_window (GtkAction  *action,

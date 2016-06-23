@@ -1083,22 +1083,6 @@ window_cmd_edit_history (GtkAction  *action,
 }
 
 void
-window_cmd_edit_sync (GtkAction  *action,
-                      EphyWindow *window)
-{
-  GtkWidget *swindow;
-
-LOG ("%s:%d", __func__, __LINE__);
-
-  swindow = ephy_shell_get_sync_window (ephy_shell_get_default ());
-
-  if (GTK_WINDOW (window) != gtk_window_get_transient_for (GTK_WINDOW (swindow)))
-    gtk_window_set_transient_for (GTK_WINDOW (swindow),
-                                  GTK_WINDOW (window));
-  gtk_window_present (GTK_WINDOW (swindow));
-}
-
-void
 window_cmd_edit_preferences (GtkAction  *action,
                              EphyWindow *window)
 {
