@@ -71,8 +71,6 @@ ephy_sync_secret_forget_all_tokens (void)
 {
   GHashTable *attributes;
 
-LOG ("%s:%d", __func__, __LINE__);
-
   attributes = secret_attributes_build (EPHY_SYNC_TOKEN_SCHEMA, NULL);
   secret_service_clear (NULL,
                         EPHY_SYNC_TOKEN_SCHEMA,

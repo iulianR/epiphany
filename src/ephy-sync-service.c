@@ -73,7 +73,7 @@ ephy_sync_service_init (EphySyncService *self)
     ephy_sync_secret_load_tokens (self);
   }
 
-LOG ("%s:%d", __func__, __LINE__);
+LOG ("[%d] sync service inited", __LINE__);
 }
 
 static void
@@ -82,10 +82,10 @@ server_response_cb (SoupSession *session,
                     gpointer     user_data)
 {
   if (message->status_code == 200) {
-LOG ("response body: %s", message->response_body->data);
+LOG ("[%d] response body: %s", __LINE__, message->response_body->data);
     // TODO: parse response data using JsonParser
   } else {
-LOG ("Error response from server: [%u] %s", message->status_code, message->reason_phrase);
+LOG ("[%d] Error response from server: [%u] %s", __LINE__, message->status_code, message->reason_phrase);
   }
 }
 
@@ -169,7 +169,8 @@ ephy_sync_service_login (EphySyncService *self)
   gchar *request_body;
   gchar *authPW;
 
-LOG ("%s:%d Preparing soup message", __func__, __LINE__);
+
+LOG ("[%d] Preparing soup message", __LINE__);
 
   session = soup_session_new_with_options (SOUP_SESSION_USER_AGENT,
                                            "test-json",
@@ -194,7 +195,7 @@ LOG ("%s:%d Preparing soup message", __func__, __LINE__);
                             strlen (request_body));
 
   soup_session_queue_message (session, message, server_response_cb, NULL);
-LOG ("%s:%d Queued the soup message", __func__, __LINE__);
+LOG ("[%d] Queued the soup message", __LINE__);
 
   // TODO: find a way to safely free request_body
   // TODO: find a way to safely destroy session, message
@@ -213,8 +214,6 @@ ephy_sync_service_stretch (EphySyncService *self,
   guint8 *unwrapBKey;
 
   g_return_if_fail (EPHY_IS_SYNC_SERVICE (self));
-
-LOG ("%s:%d", __func__, __LINE__);
 
   salt_stretch = ephy_sync_utils_kwe ("quickStretch", emailUTF8);
   quickStretchedPW = g_malloc (EPHY_SYNC_TOKEN_LENGTH);
@@ -246,6 +245,8 @@ ephy_sync_utils_display_hex ("quickStretchedPW", quickStretchedPW, EPHY_SYNC_TOK
                          strlen (info_unwrap),
                          unwrapBKey,
                          EPHY_SYNC_TOKEN_LENGTH);
+
+LOG ("[%d] Stretching done", __LINE__);
 
   g_free (salt_stretch);
   g_free (info_unwrap);
