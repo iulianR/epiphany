@@ -231,7 +231,8 @@ calculate_payload_hash (const gchar *payload,
 
 static gchar *
 calculate_mac (const gchar                 *mac_type,
-               const gchar                 *key,
+               guint8                      *key,
+               gsize                        key_length,
                EphySyncCryptoHawkArtifacts *artifacts)
 {
   struct hmac_sha256_ctx ctx;
@@ -246,7 +247,7 @@ calculate_mac (const gchar                 *mac_type,
   normalized = normalize_string (mac_type, artifacts);
   digest = g_malloc (SHA256_DIGEST_SIZE);
 
-  hmac_sha256_set_key (&ctx, strlen (key), (guint8 *) key);
+  hmac_sha256_set_key (&ctx, key_length, key);
   hmac_sha256_update (&ctx, strlen (normalized), (guint8 *) normalized);
   hmac_sha256_digest (&ctx, SHA256_DIGEST_SIZE, digest);
   mac = g_base64_encode (digest, SHA256_DIGEST_SIZE);
@@ -404,7 +405,8 @@ EphySyncCryptoHawkHeader *
 ephy_sync_crypto_compute_hawk_header (const gchar               *url,
                                       const gchar               *method,
                                       const gchar               *id,
-                                      const gchar               *key,
+                                      guint8                    *key,
+                                      gsize                      key_length,
                                       EphySyncCryptoHawkOptions *options)
 {
   EphySyncCryptoHawkArtifacts *artifacts;
@@ -424,7 +426,7 @@ ephy_sync_crypto_compute_hawk_header (const gchar               *url,
   g_return_val_if_fail (url && strlen (url) > 0, NULL);
   g_return_val_if_fail (method && strlen (method) > 0, NULL);
   g_return_val_if_fail (id && strlen (id) > 0, NULL);
-  g_return_val_if_fail (key && strlen (key) > 0, NULL);
+  g_return_val_if_fail (key, NULL);
 
   has_options = options != NULL;
   ts = g_get_real_time () / 1000000;
@@ -469,7 +471,7 @@ ephy_sync_crypto_compute_hawk_header (const gchar               *url,
                                                    g_strdup (resource),
                                                    g_strdup_printf ("%ld", ts));
 
-  mac = calculate_mac ("header", key, artifacts);
+  mac = calculate_mac ("header", key, key_length, artifacts);
 
   header = g_strconcat ("Hawk id=\"", id, "\"",
                         ", ts=\"", artifacts->ts, "\"",

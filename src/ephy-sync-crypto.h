@@ -72,7 +72,8 @@ void                       ephy_sync_crypto_hkdf                (guint8 *in,
 EphySyncCryptoHawkHeader  *ephy_sync_crypto_compute_hawk_header (const gchar               *url,
                                                                  const gchar               *method,
                                                                  const gchar               *id,
-                                                                 const gchar               *key,
+                                                                 guint8                    *key,
+                                                                 gsize                      key_length,
                                                                  EphySyncCryptoHawkOptions *options);
 
 EphySyncCryptoHawkOptions *ephy_sync_crypto_hawk_options_new    (gchar *app,
