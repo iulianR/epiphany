@@ -143,7 +143,7 @@ ephy_sync_service_finalize (GObject *object)
   EphySyncService *self = EPHY_SYNC_SERVICE (object);
 
   g_free (self->user_email);
-  g_hash_table_unref (self->tokens);
+  g_hash_table_destroy (self->tokens);
   g_clear_object (&self->soup_session);
 
   G_OBJECT_CLASS (ephy_sync_service_parent_class)->finalize (object);
