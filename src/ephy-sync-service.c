@@ -162,7 +162,7 @@ ephy_sync_service_init (EphySyncService *self)
 {
   gchar *sync_user = NULL;
 
-  self->tokens = g_hash_table_new_full (NULL, g_str_equal,
+  self->tokens = g_hash_table_new_full (g_str_hash, g_str_equal,
                                         NULL, g_free);
   self->soup_session = soup_session_new ();
 
