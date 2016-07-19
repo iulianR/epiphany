@@ -78,6 +78,9 @@ libephymain_la_CPPFLAGS = \
 	-I$(top_srcdir)/lib/history	\
 	-I$(top_srcdir)/lib/widgets   	\
 	-I$(top_srcdir)/src/bookmarks   \
+	-I$(top_srcdir)/gvdb		\
+	-DLOADER_DIR=\""$(pkglibdir)/$(EPIPHANY_MAJOR)/loaders"\"		\
+	-DDATADIR=\""$(pkgdatadir)"\" 	\
 	-DLOCALEDIR=\"$(localedir)\"	\
 	-DPKGDATADIR=\"$(pkgdatadir)\"	\
 	$(GDK_CFLAGS)			\
@@ -102,6 +105,7 @@ libephymain_la_LIBADD = \
 	$(top_builddir)/lib/widgets/libephywidgets.la		\
 	$(top_builddir)/lib/libephymisc.la			\
 	$(top_builddir)/lib/egg/libegg.la			\
+	$(top_builddir)/gvdb/libgvdb.la				\
 	$(GDK_LIBS)		\
 	$(GIO_LIBS)		\
 	$(GLIB_LIBS)		\
