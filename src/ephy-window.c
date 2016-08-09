@@ -1158,7 +1158,7 @@ sync_tab_bookmarked_status (EphyWebView   *view,
   EphyBookmark *bookmark;
   const char *address;
 
-  entry = ephy_toolbar_get_location_entry (EPHY_TOOLBAR (window->toolbar));
+  entry = ephy_header_bar_get_location_entry (EPHY_HEADER_BAR (window->header_bar));
   address = ephy_web_view_get_address (view);
 
   if (address) {
@@ -2793,7 +2793,7 @@ location_controller_lock_clicked_cb (EphyLocationController *controller,
   GdkRectangle lock_position;
 
   location_entry = ephy_header_bar_get_location_entry (EPHY_HEADER_BAR (window->header_bar));
-  gtk_entry_get_icon_area (GTK_ENTRY (location_entry), GTK_ENTRY_ICON_PRIMARY &lock_position);
+  gtk_entry_get_icon_area (GTK_ENTRY (location_entry), GTK_ENTRY_ICON_PRIMARY, &lock_position);
   open_security_popover (window, location_entry, &lock_position);
 }
 
