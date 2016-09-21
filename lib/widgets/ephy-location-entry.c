@@ -59,6 +59,8 @@ struct _EphyLocationEntry {
 
   GBinding *paste_binding;
 
+  GtkPopover *add_bookmark_popover;
+
   char *before_completion;
   char *saved_text;
 
@@ -1208,6 +1210,33 @@ ephy_location_entry_set_lock_tooltip (EphyLocationEntry *entry,
   gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry),
                                    GTK_ENTRY_ICON_PRIMARY,
                                    tooltip);
+}
+
+void
+ephy_location_entry_set_add_bookmark_popover (EphyLocationEntry *entry,
+                                              GtkPopover        *popover)
+{
+  GdkRectangle pointing_to;
+
+  g_return_if_fail (EPHY_IS_LOCATION_ENTRY (entry));
+  g_return_if_fail (GTK_IS_POPOVER (popover));
+
+  entry->add_bookmark_popover = popover;
+
+  gtk_entry_get_icon_area (GTK_ENTRY (entry),
+                           GTK_ENTRY_ICON_SECONDARY,
+                           &pointing_to);
+  /* FIXME: GTK+ sets "margin-left: 6px" for the icon. Add 3px to the
+   * rectangle so the popover is centered on the star.
+   */
+  pointing_to.x = pointing_to.x + 3;
+  gtk_popover_set_pointing_to (entry->add_bookmark_popover, &pointing_to);
+}
+
+GtkPopover *
+ephy_location_entry_get_add_bookmark_popover (EphyLocationEntry *entry)
+{
+  return entry->add_bookmark_popover;
 }
 
 /**
