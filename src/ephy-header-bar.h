@@ -39,5 +39,6 @@ GtkWidget    *ephy_header_bar_get_location_entry                (EphyHeaderBar *
 EphyTitleBox *ephy_header_bar_get_title_box                     (EphyHeaderBar *header_bar);
 GtkWidget    *ephy_header_bar_get_page_menu_button              (EphyHeaderBar *header_bar);
 GtkWidget    *ephy_header_bar_get_new_tab_button                (EphyHeaderBar *header_bar);
+EphyWindow   *ephy_header_bar_get_window                        (EphyHeaderBar *header_bar);
 
 G_END_DECLS
